@@ -31,9 +31,33 @@ void print_result_map() {
     }
 }
 
+uint64_t method_of_trial_divisions(uint64_t number) {
+    std::bitset<64> binary_number(number);
+
+    if (!binary_number.test(0)) {
+        return 2;
+    }
+
+    for (auto it = result_map.begin(); it != result_map.end(); ++it) {
+        uint64_t d = it->first;
+        uint64_t sum = 0;
+
+        // problem lies here
+        for (size_t i = 63; i > 0; i--)
+            sum += binary_number.test(i) * result_map.at(d).at(i % result_map.at(d).size());
+            sum %= d;
+
+        if (sum == 0)
+            return d;
+    }
+
+    return 1;
+}
+
 int main() {
     precompute_result_map();
-    print_result_map();
+    // print_result_map();
+    std::cout << method_of_trial_divisions(67443) << std::endl;
 
     return 0;
 }
