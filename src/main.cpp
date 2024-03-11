@@ -105,6 +105,5 @@ int main() {
     //         std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
     //     }
     // }
-
     return 0;
 }
