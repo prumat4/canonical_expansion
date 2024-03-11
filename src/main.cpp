@@ -6,6 +6,8 @@
 #include <map>
 #include <algorithm>
 #include <numeric>
+#include <random>
+#include "algorithms.h"
 
 std::map<uint64_t, std::vector<uint64_t>> result_map;
 
@@ -73,9 +75,8 @@ uint64_t rho_pollard(uint64_t number) {
 
         if (x_vector.at(i) - y_vector.at(i) == 0) 
             return 1;
-        
-
-        uint64_t divisor = std::gcd(number, abs(y_vector.at(i) - x_vector.at(i)) % number);
+    
+        uint64_t divisor = std::gcd(number, std::abs(static_cast<int64_t>(y_vector.at(i) - x_vector.at(i))) % number);
         if (divisor != 1) 
             return divisor;
     }
@@ -84,19 +85,26 @@ uint64_t rho_pollard(uint64_t number) {
 }
 
 int main() {
-    precompute_result_map();
-    std::vector<uint64_t> test_values = { 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789 };
+    // std::cout << evaluateJacobiSymbol(2, 3) << std::endl;
+    // auto test = generateFactorBase(1237812319023, 1000000);
+    // for(const auto& it : test)
+    // {
+    //     std::cout << it << " " << std::endl;
+    // }
+    std::cout << solovey_strassen_test(31) << std::endl;
+    // precompute_result_map();
+    // std::vector<uint64_t> test_values = { 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789 };
 
-    for(const auto value : test_values) {
-        std::cout << method_of_trial_divisions(value) << std::endl;
+    // for(const auto value : test_values) {
+    //     std::cout << method_of_trial_divisions(value) << std::endl;
 
-        uint64_t divisor = rho_pollard(value);
-        if (divisor == 1) {
-            std::cout << value << " is prime" << std::endl;
-        } else {
-            std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
-        }
-    }
+    //     uint64_t divisor = rho_pollard(value);
+    //     if (divisor == 1) {
+    //         std::cout << value << " is prime" << std::endl;
+    //     } else {
+    //         std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
+    //     }
+    // }
 
     return 0;
 }
