@@ -84,7 +84,21 @@ uint64_t rho_pollard(uint64_t number) {
     return 1;
 }
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc > 1) {
+        int64_t number = std::stoll(argv[1]);
+        std::cout << number << std::endl;
+    } else {
+        std::cerr << "Error: No number provided.\n"
+                  << "Usage: " << argv[0] << " <number>\n\n"
+                  << "Please provide a number as an argument. This number will be used for [briefly describe what the number is for].\n"
+                  << "Example:\n"
+                  << "  " << argv[0] << " 12345\n\n"
+                  << "In this example, '12345' is the number that will be used to [briefly describe what the program does with the number].\n";
+        // should think about this later :)
+        // return 1;
+    }
+    
     // std::cout << evaluateJacobiSymbol(2, 3) << std::endl;
     // auto test = generateFactorBase(1237812319023, 1000000);
     // for(const auto& it : test)
@@ -105,5 +119,6 @@ int main() {
     //         std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
     //     }
     // }
+    
     return 0;
 }
