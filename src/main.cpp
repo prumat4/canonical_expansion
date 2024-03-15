@@ -85,32 +85,25 @@ uint64_t rho_pollard(uint64_t number) {
 }
 
 int main(int argc, char** argv) {
-    // if (argc > 1) {
-    //     int64_t number = std::stoll(argv[1]);
-    //     std::cout << number << std::endl;
-    // } else {
-    //     std::cerr << "Error: No number provided.\n"
-    //               << "Usage: " << argv[0] << " <number>\n\n"
-    //               << "Please provide a number as an argument. This number will be used for [briefly describe what the number is for].\n"
-    //               << "Example:\n"
-    //               << "  " << argv[0] << " 12345\n\n"
-    //               << "In this example, '12345' is the number that will be used to [briefly describe what the program does with the number].\n";
-    //     // should think about this later :)
-    //     // return 1;
-    // }
+    if (argc > 1) {
+        int64_t number = std::stoll(argv[1]);
+        std::cout << number << std::endl;
+    } else {
+        std::cerr << "Error: No number provided.\n"
+                  << "Usage: " << argv[0] << " <number>\n\n"
+                  << "Please provide a number as an argument. This number will be used for [briefly describe what the number is for].\n"
+                  << "Example:\n"
+                  << "  " << argv[0] << " 12345\n\n"
+                  << "In this example, '12345' is the number that will be used to [briefly describe what the program does with the number].\n";
+        // should think about this later :)
+        // return 1;
+    }
     
-    // std::cout << evaluateJacobiSymbol(2, 3) << std::endl;
-    // auto test = generateFactorBase(1237812319023, 1000000);
-    // for(const auto& it : test)
-    // {
-    //     std::cout << it << " " << std::endl;
-    // }
-    std::cout << solovey_strassen_test(31) << std::endl;
-    // precompute_result_map();
-    // std::vector<uint64_t> test_values = { 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789 };
+    precompute_result_map();
+    // std::vector<uint64_t> test_values = { 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789, 872 };
 
     // for(const auto value : test_values) {
-    //     std::cout << method_of_trial_divisions(value) << std::endl;
+    //     // std::cout << method_of_trial_divisions(value) << std::endl;
 
     //     uint64_t divisor = rho_pollard(value);
     //     if (divisor == 1) {
@@ -119,6 +112,19 @@ int main(int argc, char** argv) {
     //         std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
     //     }
     // }
+
+
+    
+    // std::cout << evaluateJacobiSymbol(2, 3) << std::endl;
+    // auto test = generateFactorBase(1237812319023, 1000000);
+    // for(const auto& it : test)
+    // {
+    //     std::cout << it << " " << std::endl;
+    // }
+    std::cout << "solovey: " << solovey_strassen_test(31) << std::endl;
+    
+    // add 
+    find_all_divisors(2984278750326720112);
     
     return 0;
 }

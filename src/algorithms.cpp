@@ -46,36 +46,36 @@ int64_t evaluateJacobiSymbol(uint64_t base, uint64_t value)
 
 bool solovey_strassen_test(const long number, const std::size_t iterationsNumber = 100) 
 {
-    // std::random_device rd;
-    // std::mt19937 gen(rd());
-    // std::uniform_int_distribution<long> distribution(3, number - 1);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<long> distribution(3, number - 1);
 
-    // mpz_class mpzNumber(number);
-    // for (std::size_t i = 0; i < iterationsNumber; ++i) {
-    //     mpz_class randomValue = distribution(gen);
-    //     mpz_class possibleDivider;
-    //     mpz_gcd(possibleDivider.get_mpz_t(), mpzNumber.get_mpz_t(), randomValue.get_mpz_t());
+    mpz_class mpzNumber(number);
+    for (std::size_t i = 0; i < iterationsNumber; ++i) {
+        mpz_class randomValue = distribution(gen);
+        mpz_class possibleDivider;
+        mpz_gcd(possibleDivider.get_mpz_t(), mpzNumber.get_mpz_t(), randomValue.get_mpz_t());
 
-    //     // Check if gcd(randomValue, number) = 1
-    //     if (mpz_cmp_ui(possibleDivider.get_mpz_t(), 1) != 0)
-    //         return false;
+        // Check if gcd(randomValue, number) = 1
+        if (mpz_cmp_ui(possibleDivider.get_mpz_t(), 1) != 0)
+            return false;
 
-    //     if (mpz_odd_p(possibleDivider.get_mpz_t()) == 0)
-    //         return false;
+        if (mpz_odd_p(possibleDivider.get_mpz_t()) == 0)
+            return false;
 
-    //     int64_t jacobiSymbol = mpz_jacobi(randomValue.get_mpz_t(), mpzNumber.get_mpz_t());
-    //     mpz_class power;
-    //     mpz_powm_ui(power.get_mpz_t(), randomValue.get_mpz_t(), (number - 1) / 2, mpzNumber.get_mpz_t());
+        int64_t jacobiSymbol = mpz_jacobi(randomValue.get_mpz_t(), mpzNumber.get_mpz_t());
+        mpz_class power;
+        mpz_powm_ui(power.get_mpz_t(), randomValue.get_mpz_t(), (number - 1) / 2, mpzNumber.get_mpz_t());
 
-    //     while (jacobiSymbol < 0)
-    //         jacobiSymbol += number;
-    //     power %= mpzNumber;
+        while (jacobiSymbol < 0)
+            jacobiSymbol += number;
+        power %= mpzNumber;
 
-    //     if (jacobiSymbol != power.get_si())
-    //         return false;
-    // }
+        if (jacobiSymbol != power.get_si())
+            return false;
+    }
 
-    // return true;
+    return true;
 }
 
 std::vector<int64_t> sieveOfEratosthenes(const double limit) 
