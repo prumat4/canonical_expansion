@@ -32,21 +32,36 @@ void printResultMap() {
     }
 }
 
+// uint32_t methodOfTrialDivisions(const uint64_t number) {
+//     if (number < 2) return number;
+   
+//     if ((number & 1) == 0) return 2;
+   
+//     for (const auto& it : result_map) {
+//         uint64_t d = it.first;
+//         uint64_t sum = 0;
+//         for (size_t i = 0; i < 64; ++i) {
+//             bool bitSet = (number >> i) & 1;
+//             sum = (sum + (bitSet ? result_map[d][i % result_map[d].size()] : 0)) % d;
+//         }
+//         if (sum == 0) return d;
+//     }
+//     return 1;
+// }
+
 uint32_t methodOfTrialDivisions(const uint64_t number) {
-    if (number < 2) return number;
-   
+    if (number < 2) return number; 
+    
     if ((number & 1) == 0) return 2;
-   
-    for (const auto& it : result_map) {
-        uint64_t d = it.first;
-        uint64_t sum = 0;
-        for (size_t i = 0; i < 64; ++i) {
-            bool bitSet = (number >> i) & 1;
-            sum = (sum + (bitSet ? result_map[d][i % result_map[d].size()] : 0)) % d;
-        }
-        if (sum == 0) return d;
+    
+    std::vector<uint64_t> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47};
+    
+    for (uint64_t d : primes) {
+        if (d >= number) break;
+        if (number % d == 0) return d; 
     }
-    return 1;
+    
+    return 1; 
 }
 
 int rhoFunction(int x, int modulus) {
@@ -458,7 +473,7 @@ std::vector<uint64_t> findCanonicalExpansion(uint64_t n) {
             n /= divisor;
             continue;
         }
-
+        
         divisor = rhoPollard(n);
         if (divisor > 1) {
             factors.push_back(divisor);
