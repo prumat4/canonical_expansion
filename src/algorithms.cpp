@@ -1,9 +1,82 @@
+#include <map>
 #include <random>
 #include <cmath>
 #include <algorithm>
 #include <iostream>
 #include <gmpxx.h>
 #include <stdio.h>
+#include <chrono>
+#include <utility>
+
+std::map<uint64_t, std::vector<uint64_t>> result_map;
+
+void precomputeResultMap() {
+    std::vector<uint64_t> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47};
+    for (uint64_t d : primes) {
+        result_map[d] = {1};
+       
+        while (std::count(result_map.at(d).begin(), result_map.at(d).end(), result_map.at(d).back()) < 2) {
+            result_map.at(d).push_back((result_map.at(d).back() * 2) % d);
+        }
+        result_map.at(d).pop_back();
+    }
+}
+
+void printResultMap() {
+    for (const auto& pair : result_map) {
+        std::cout << pair.first << ": ";
+        for (uint64_t num : pair.second) {
+            std::cout << num << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+uint32_t methodOfTrialDivisions(const uint64_t number) {
+    if (number < 2) return number;
+   
+    if ((number & 1) == 0) return 2;
+   
+    for (const auto& it : result_map) {
+        uint64_t d = it.first;
+        uint64_t sum = 0;
+        for (size_t i = 0; i < 64; ++i) {
+            bool bitSet = (number >> i) & 1;
+            sum = (sum + (bitSet ? result_map[d][i % result_map[d].size()] : 0)) % d;
+        }
+        if (sum == 0) return d;
+    }
+    return 1;
+}
+
+int rhoFunction(int x, int modulus) {
+    return (x * x + 1) % modulus;
+}
+
+uint64_t rhoPollard(uint64_t number) {
+    std::vector<uint64_t> x_vector;
+    std::vector<uint64_t> y_vector;
+  
+    x_vector.push_back(rhoFunction(2, number));
+    y_vector.push_back(rhoFunction(x_vector.at(0), number));
+  
+    uint64_t i = 0;
+  
+    while (std::count(x_vector.begin(), x_vector.end(), x_vector.at(i)) != 2) {
+        x_vector.push_back(rhoFunction(x_vector.at(i), number));
+        y_vector.push_back(rhoFunction(rhoFunction(y_vector.at(i), number), number));
+        i++;
+      
+        if (x_vector.at(i) - y_vector.at(i) == 0) 
+            return 1;
+  
+        uint64_t divisor = std::gcd(number, std::abs(static_cast<int64_t>(y_vector.at(i) - x_vector.at(i))) % number);
+  
+        if (divisor != 1) 
+            return divisor;
+    }
+    return 1;
+}
 
 int64_t evaluateJacobiSymbol(uint64_t base, uint64_t value)
 {
@@ -214,8 +287,6 @@ std::vector<int64_t> findSmoothValues(const uint64_t number, std::vector<int64_t
         {
             smoothValues.push_back(smoothValueCandidate);
             ++i;
-
-            std::cout << "i: " << i << std::endl;
         }
 
         b_ii = b_i;
@@ -342,9 +413,6 @@ int64_t methodBrilhartMorrison(const uint64_t number)
             Y *= std::pow(factorBase[j], tempResult);
         }
 
-        std::cout << "X: " << X << std::endl;
-        std::cout << "Y: " << Y << std::endl;
-
         int64_t firstPossibleResult = std::gcd(X + Y, number);
         int64_t secondPossibleResult = std::gcd(X - Y, number);
 
@@ -359,4 +427,60 @@ int64_t methodBrilhartMorrison(const uint64_t number)
 
         alpha += 0.5;
     }
+}
+
+void logDivisor(uint64_t divisor, const std::string& method) {
+    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::cout << "Divisor found: " << divisor << ", using method: " << method
+              << ", at time: " << std::ctime(&now);
+}
+
+std::vector<uint64_t> findCanonicalExpansion(uint64_t n) {
+    std::vector<uint64_t> factors;
+    if (solovey_strassen_test(n)) {
+        factors.push_back(n);
+        logDivisor(n, "Solovay-Strassen (primality test)");
+        return factors;
+    }
+
+    auto startTime = std::chrono::system_clock::now();
+    while (n > 1) {
+        if (solovey_strassen_test(n)) {
+            factors.push_back(n);
+            logDivisor(n, "Solovay-Strassen (primality test)");
+            break;
+        }
+
+        uint64_t divisor = methodOfTrialDivisions(n);
+        if (divisor > 1 && divisor <= 47) {
+            factors.push_back(divisor);
+            logDivisor(divisor, "Trial Division");
+            n /= divisor;
+            continue;
+        }
+
+        divisor = rhoPollard(n);
+        if (divisor > 1) {
+            factors.push_back(divisor);
+            logDivisor(divisor, "Pollard's Rho");
+            n /= divisor;
+            continue;
+        }
+
+        divisor = methodBrilhartMorrison(n);
+        if (divisor > 1) {
+            factors.push_back(divisor);
+            logDivisor(divisor, "Brilhart-Morrison");
+            n /= divisor;
+            continue;
+        }
+
+        std::cout << "I can't find the canonical expansion of the number :(" << std::endl;
+        break;
+    }
+    auto endTime = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsedSeconds = endTime - startTime;
+    std::cout << "Algorithm execution time: " << elapsedSeconds.count() << "s\n";
+
+    return factors;
 }
