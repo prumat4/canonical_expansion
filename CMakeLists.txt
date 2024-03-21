@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(GMP_PREFIX "" CACHE PATH "path to GMP")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -march=native")
 
 find_path(GMP_INCLUDE_DIR gmp.h gmpxx.h
     PATHS ${GMP_PREFIX}/include /usr/include /usr/local/include)

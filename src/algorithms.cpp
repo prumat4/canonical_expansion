@@ -198,11 +198,6 @@ std::vector<int64_t> findSmoothValues(const uint64_t number, std::vector<int64_t
     std::cout << "k: " << k << std::endl;
     auto continuedFractionValues = continuedFraction(number, k);
     std::cout << "continued fraction" << std::endl;
-    // for(const auto& it : continuedFractionValues)
-    // {
-    //     std::cout << it << " ";
-    // }
-    // std::cout << std::endl;
 
     int64_t b_i = 1;
     int64_t b_ii = 0;
@@ -315,18 +310,9 @@ int64_t methodBrilhartMorrison(const uint64_t number)
     {
         auto factorBase = generateFactorBase(number, alpha);
         std::cout << "factor base" << std::endl;
-        // for(const auto& it : factorBase)
-        // {
-        //     std::cout << it << " ";
-        // }
-        // std::cout << std::endl;
 
         auto smoothValues = findSmoothValues(number, factorBase, factorBase.size() - 1);
         std::cout << "smooth values" << std::endl;
-        // for(const auto& it : smoothValues)
-        // {
-        //     std::cout << it << " ";
-        // }
 
         std::vector<std::vector<int64_t>> sle;
         for(auto it : smoothValues)
@@ -334,19 +320,8 @@ int64_t methodBrilhartMorrison(const uint64_t number)
             sle.push_back(factorizeSmoothValue(it, number, factorBase).first);
         }
 
-        // std::cout << std::endl;
-        // for(const auto& it : sle)
-        // {
-        //     for(const auto& i : it)
-        //     {
-        //         std::cout << i << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-
         std::cout << std::endl;
         auto solution = gaussGF2(sle);
-        // printSolution(solution);
         
         int64_t X = 1;
         for(std::size_t i = 0; i < smoothValues.size(); ++i)
@@ -375,12 +350,10 @@ int64_t methodBrilhartMorrison(const uint64_t number)
 
         if(firstPossibleResult > 1 && firstPossibleResult < number)
         {
-            // std::cout << "first divider: " << firstPossibleResult << std::endl;
             return firstPossibleResult;
         }
         else if(secondPossibleResult > 1 && secondPossibleResult < number)
         {
-            // std::cout << "second divider: " << secondPossibleResult << std::endl;
             return secondPossibleResult;
         }
 

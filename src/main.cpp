@@ -5,6 +5,7 @@
 #include <bitset>
 #include <map>
 #include <algorithm>
+#include <iomanip>
 #include <numeric>
 #include <random>
 #include "algorithms.h"
@@ -12,14 +13,13 @@
 std::map<uint64_t, std::vector<uint64_t>> result_map;
 
 void precompute_result_map() {
-    std::vector<uint64_t> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101};
+    std::vector<uint64_t> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47};
 
     for (uint64_t d : primes) {
         result_map[d] = {1};
         while (std::count(result_map.at(d).begin(), result_map.at(d).end(), result_map.at(d).back()) < 2) {
             result_map.at(d).push_back((result_map.at(d).back() * 2) % d);
         }
-
         result_map.at(d).pop_back();
     }
 }
@@ -35,22 +35,20 @@ void print_result_map() {
 }
 
 uint32_t method_of_trial_divisions(const uint64_t number) {
-    std::bitset<64> binary_number(number);
+    if (number < 2) return number;
 
-    if (binary_number.test(binary_number.size() - 1))
-        return 2;
+    if ((number & 1) == 0) return 2;
 
-       for (auto it = result_map.begin(); it != result_map.end(); ++it) {
-        uint64_t d = it->first;
+    for (const auto& it : result_map) {
+        uint64_t d = it.first;
         uint64_t sum = 0;
 
-        for (size_t i = 0; i < binary_number.size(); i++) {
-            // m?
-            sum += (binary_number[binary_number.size() - i - 1]) * result_map.at(d).at(i % result_map.at(d).size());
+        for (size_t i = 0; i < 64; ++i) {
+            bool bitSet = (number >> i) & 1;
+            sum = (sum + (bitSet ? result_map[d][i % result_map[d].size()] : 0)) % d;
         }
 
-        if (sum % d == 0)
-            return d;
+        if (sum == 0) return d;
     }
 
     return 1;
@@ -100,31 +98,34 @@ int main(int argc, char** argv) {
     }
     
     precompute_result_map();
-    // std::vector<uint64_t> test_values = { 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789, 872 };
+    std::vector<uint64_t> test_values = { 31, 1021514194991569, 499664789704823, 3009182572376191, 666666, 99999999, 123456789, 872, 816258 };
 
-    // for(const auto value : test_values) {
-    //     // std::cout << method_of_trial_divisions(value) << std::endl;
+    for(const auto value : test_values) {
+        uint32_t divisor = method_of_trial_divisions(value);
+        if (divisor == 1) {
+            std::cout << value << " is prime or not divisible by the primes in the map.\n";
+        } else {
+            std::cout << std::fixed << std::setprecision(4);
+            std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << float(value) / float(divisor) << std::endl;
+        }
+        divisor = rho_pollard(value);
+        if (divisor == 1) {
+            std::cout << value << " is prime" << std::endl;
+        } else {
+            std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
+        }
+    }
 
-    //     uint64_t divisor = rho_pollard(value);
-    //     if (divisor == 1) {
-    //         std::cout << value << " is prime" << std::endl;
-    //     } else {
-    //         std::cout << value << " is divisible by " << divisor << ", " << value << " / " << divisor << " = " << value / divisor << std::endl;
-    //     }
-    // }
-
-
-    
     // std::cout << evaluateJacobiSymbol(2, 3) << std::endl;
     // auto test = generateFactorBase(1237812319023, 1000000);
     // for(const auto& it : test)
     // {
     //     std::cout << it << " " << std::endl;
     // }
-    std::cout << "solovey: " << solovey_strassen_test(31) << std::endl;
+    // std::cout << "solovey: " << solovey_strassen_test(31) << std::endl;
     
-    // add 
-    find_all_divisors(2984278750326720112);
+    // auto k = methodBrilhartMorrison(72365723);
+    // std::cout << k;
     
     return 0;
 }
