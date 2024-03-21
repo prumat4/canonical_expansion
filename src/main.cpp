@@ -15,10 +15,8 @@ int main(int argc, char** argv) {
         try {
             uint64_t number = std::stoull(argv[1]);
             std::cout << "Processing number: " << number << std::endl;
+            precomputeResultMap();
 
-            precomputeResultMap(); // Ensure any necessary setup is done before computations
-
-            // Call the function to find the canonical expansion and print the factors
             std::vector<uint64_t> factors = findCanonicalExpansion(number);
             std::cout << "Canonical expansion: ";
             for (const auto& factor : factors) {
