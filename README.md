@@ -23,6 +23,8 @@ This project implements an algorithm to find the canonical expansion of a given 
     ./canonicalExpansion 666
     ```
 
+### Docker hub link:
+https://hub.docker.com/repository/docker/omega111111/factorization/general
 ### Building and Running with Docker
 1. Ensure Docker is installed and running on your system.
 2. Build the Docker image from the Dockerfile provided in the project directory. Replace `your-image-name` with your preferred name for the Docker image:
